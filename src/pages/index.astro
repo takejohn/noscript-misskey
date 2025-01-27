@@ -9,14 +9,12 @@ if (misskeyUrl != null) {
     if (parsedUrl == null) {
         error = 'URLが不正です';
     } else {
+        const path = `/m/${parsedUrl.host}${parsedUrl.pathname}`;
         if (parsedUrl.protocol == 'https:') {
-            return Astro.redirect(
-                `/${parsedUrl.host}${parsedUrl.pathname}`,
-                307,
-            );
+            return Astro.redirect(path, 307);
         } else {
             return Astro.redirect(
-                `/${parsedUrl.host}${parsedUrl.pathname}?protocol=${encodeURIComponent(parsedUrl.protocol)}`,
+                `${path}?protocol=${encodeURIComponent(parsedUrl.protocol)}`,
                 307,
             );
         }
