@@ -10,9 +10,15 @@ if (misskeyUrl != null) {
         error = 'URLが不正です';
     } else {
         if (parsedUrl.protocol == 'https:') {
-            return Astro.redirect(`/${parsedUrl.host}${parsedUrl.pathname}`, 307);
+            return Astro.redirect(
+                `/${parsedUrl.host}${parsedUrl.pathname}`,
+                307,
+            );
         } else {
-            return Astro.redirect(`/${parsedUrl.host}${parsedUrl.pathname}?protocol=${encodeURIComponent(parsedUrl.protocol)}`, 307);
+            return Astro.redirect(
+                `/${parsedUrl.host}${parsedUrl.pathname}?protocol=${encodeURIComponent(parsedUrl.protocol)}`,
+                307,
+            );
         }
     }
 }
@@ -26,7 +32,13 @@ if (error != null) {
     <h1>NoScript Misskey</h1>
     <form action="/">
         <label for="input-url">URLを入力</label>
-        <input type="url" id="input-url" name="misskey-url" required placeholder="https://example.com">
+        <input
+            type="url"
+            id="input-url"
+            name="misskey-url"
+            required
+            placeholder="https://example.com"
+        />
         <button type="submit">移動</button>
     </form>
     {error && <p>{error}</p>}
