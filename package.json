@@ -5,13 +5,16 @@
     "scripts": {
         "dev": "astro dev",
         "build": "astro build",
-        "preview": "astro preview",
+        "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
         "astro": "astro",
         "fmt": "prettier --write ."
     },
     "dependencies": {
         "astro": "^5.1.9",
-        "misskey-js": "^2025.1.0-beta.3",
+        "misskey-js": "^2025.1.0-beta.3"
+    },
+    "devDependencies": {
+        "@deno/astro-adapter": "^0.2.0",
         "prettier": "^3.4.2",
         "prettier-plugin-astro": "^0.14.1"
     }
