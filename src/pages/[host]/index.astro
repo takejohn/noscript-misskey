@@ -1,0 +1,13 @@
+---
+import Layout from "../../layouts/Layout.astro"
+
+const { host } = Astro.params;
+
+if (host == null) {
+    return Astro.redirect('/', 307);
+}
+---
+
+<Layout>
+    <h1>{host}</h1>
+</Layout>
