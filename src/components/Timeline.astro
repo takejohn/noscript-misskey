@@ -1,0 +1,13 @@
+---
+import type { entities } from 'misskey-js';
+import Note from './Note.astro';
+
+interface Props {
+    notes: entities.Note[];
+}
+
+const { notes } = Astro.props;
+---
+
+<h1>タイムライン</h1>
+{notes.map((note) => <Note note={note} />)}

@@ -1,0 +1,14 @@
+---
+import type { entities } from 'misskey-js';
+
+interface Props {
+    note: entities.Note;
+}
+
+const { note } = Astro.props;
+---
+
+<article>
+    <h2>{note.user.name ?? note.user.username}</h2>
+    <p>{note.text ?? '(本文なし)'}</p>
+</article>

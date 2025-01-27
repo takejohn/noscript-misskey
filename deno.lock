@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "npm:astro@^5.1.9": "5.1.9_vite@6.0.11_zod@3.24.1",
+    "npm:misskey-js@^2025.1.0-beta.3": "2025.1.0-beta.3",
     "npm:prettier-plugin-astro@~0.14.1": "0.14.1",
     "npm:prettier@^3.4.2": "3.4.2"
   },
@@ -373,6 +374,9 @@
     },
     "@shikijs/vscode-textmate@10.0.1": {
       "integrity": "sha512-fTIQwLF+Qhuws31iw7Ncl1R3HUDtGwIipiJ9iU+UsDUwMhegFcQKQHd51nZjb7CArq0MvON8rbgCGQYWHUKAdg=="
+    },
+    "@simplewebauthn/types@11.0.0": {
+      "integrity": "sha512-b2o0wC5u2rWts31dTgBkAtSNKGX0cvL6h8QedNsKmj8O4QoLFQFR3DBVBUlpyVEhYKA+mXGUaXbcOc4JdQ3HzA=="
     },
     "@types/cookie@0.6.0": {
       "integrity": "sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA=="
@@ -1434,6 +1438,14 @@
     "mime@3.0.0": {
       "integrity": "sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A=="
     },
+    "misskey-js@2025.1.0-beta.3": {
+      "integrity": "sha512-wRhKuuMdyKYOsGWw4QmOBgaHUrNw47nYdKFrpxwTageEEjyyTZrkAcSOoPJAxJJFqui2mC0VAULzDqyznIHeng==",
+      "dependencies": [
+        "@simplewebauthn/types",
+        "eventemitter3",
+        "reconnecting-websocket"
+      ]
+    },
     "mrmime@2.0.0": {
       "integrity": "sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw=="
     },
@@ -1600,6 +1612,9 @@
       "dependencies": [
         "picomatch@2.3.1"
       ]
+    },
+    "reconnecting-websocket@4.4.0": {
+      "integrity": "sha512-D2E33ceRPga0NvTDhJmphEgJ7FUYF0v4lr1ki0csq06OdlxKfugGzN0dSkxM/NfqCxYELK4KcaTOUOjTV6Dcng=="
     },
     "regex-recursion@5.1.1": {
       "integrity": "sha512-ae7SBCbzVNrIjgSbh7wMznPcQel1DNlDtzensnFxpiNpXt1U2ju/bHugH422r+4LAVS1FpW1YCwilmnNsjum9w==",
@@ -2114,6 +2129,7 @@
     "packageJson": {
       "dependencies": [
         "npm:astro@^5.1.9",
+        "npm:misskey-js@^2025.1.0-beta.3",
         "npm:prettier-plugin-astro@~0.14.1",
         "npm:prettier@^3.4.2"
       ]

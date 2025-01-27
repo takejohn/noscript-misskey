@@ -1,13 +1,54 @@
 ---
+import { Result } from '../../common/result.js';
+import ErrorPage from '../../components/ErrorPage.astro';
+import Timeline from '../../components/Timeline.astro';
 import Layout from '../../layouts/Layout.astro';
+import { api, type entities } from 'misskey-js';
 
 const { host } = Astro.params;
 
 if (host == null) {
     return Astro.redirect('/', 307);
 }
+
+async function getNotes(
+    origin: string,
+): Promise<Result<entities.NotesLocalTimelineResponse>> {
+    const client = new api.APIClient({ origin });
+    try {
+        return Result.ok(await client.request('notes/local-timeline', {}));
+    } catch (e) {
+        console.log(e);
+        return Result.err(500, String(e));
+    }
+}
+
+async function getData(): Promise<Result<entities.NotesLocalTimelineResponse>> {
+    const { host } = Astro.params;
+    if (host == null) {
+        return Result.err(400, 'インスタンスが指定されていません');
+    }
+    const protocol = Astro.url.searchParams.get('protocol') ?? 'https:';
+    if (protocol != 'https:' && protocol != 'http:') {
+        return Result.err(400, `不正なプロトコル: ${protocol}`);
+    }
+    const notes = await getNotes(`${protocol}//${host}`);
+    if (!notes.ok) {
+        return notes;
+    }
+    return notes;
+}
+
+const data = await getData();
+Astro.response.status = data.status;
 ---
 
 <Layout>
-    <h1>{host}</h1>
+    {
+        data.ok ? (
+            <Timeline notes={data.content} />
+        ) : (
+            <ErrorPage>{data.message}</ErrorPage>
+        )
+    }
 </Layout>
