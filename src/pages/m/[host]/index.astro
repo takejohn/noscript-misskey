@@ -23,7 +23,12 @@ async function getNotes(
     }
 }
 
-async function getData(): Promise<Result<entities.NotesLocalTimelineResponse>> {
+async function getData(): Promise<
+    Result<{
+        host: string;
+        notes: entities.NotesLocalTimelineResponse;
+    }>
+> {
     const { host } = Astro.params;
     if (host == null) {
         return Result.err(400, 'インスタンスが指定されていません');
@@ -36,7 +41,7 @@ async function getData(): Promise<Result<entities.NotesLocalTimelineResponse>> {
     if (!notes.ok) {
         return notes;
     }
-    return notes;
+    return Result.ok({ host, notes: notes.content });
 }
 
 const data = await getData();
@@ -46,7 +51,7 @@ Astro.response.status = data.status;
 <Layout>
     {
         data.ok ? (
-            <Timeline notes={data.content} />
+            <Timeline host={data.content.host} notes={data.content.notes} />
         ) : (
             <ErrorPage>{data.message}</ErrorPage>
         )

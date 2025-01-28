@@ -2,13 +2,23 @@
 import type { entities } from 'misskey-js';
 
 interface Props {
+    host: string;
     note: entities.Note;
 }
 
-const { note } = Astro.props;
+const { host, note } = Astro.props;
+
+const { user, createdAt, text } = note;
+
+const dateCreatedAt = new Date(createdAt);
 ---
 
 <article>
-    <h2>{note.user.name ?? note.user.username}</h2>
-    <p>{note.text ?? '(本文なし)'}</p>
+    <h2>{user.name ?? user.username}</h2>
+    <a href={`/m/${host}/notes/${note.id}`}>
+        <time datetime={dateCreatedAt.toISOString()}>
+            {dateCreatedAt.toLocaleString('ja')}
+        </time>
+    </a>
+    <p>{text ?? '(本文なし)'}</p>
 </article>

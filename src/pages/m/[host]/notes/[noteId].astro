@@ -1,0 +1,53 @@
+---
+import { api, type entities } from 'misskey-js';
+import { Result } from '../../../../common/result.js';
+import Note from '../../../../components/Note.astro';
+import ErrorPage from '../../../../components/ErrorPage.astro';
+import Layout from '../../../../layouts/Layout.astro';
+
+async function getNote(
+    origin: string,
+    noteId: string,
+): Promise<Result<entities.Note>> {
+    const client = new api.APIClient({ origin });
+    try {
+        return Result.ok(await client.request('notes/show', { noteId }));
+    } catch (e) {
+        console.log(e);
+        return Result.err(500, String(e));
+    }
+}
+
+async function getData(): Promise<
+    Result<{ host: string; note: entities.Note }>
+> {
+    const { host, noteId } = Astro.params;
+    if (host == null) {
+        throw new TypeError('host is undefined');
+    }
+    if (noteId == null) {
+        throw new TypeError('noteId is undefined');
+    }
+    const protocol = Astro.url.searchParams.get('protocol') ?? 'https:';
+    if (protocol != 'https:' && protocol != 'http:') {
+        return Result.err(400, `不正なプロトコル: ${protocol}`);
+    }
+    const note = await getNote(`${protocol}//${host}`, noteId);
+    if (!note.ok) {
+        return note;
+    }
+    return Result.ok({ host, note: note.content });
+}
+
+const data = await getData();
+---
+
+<Layout>
+    {
+        data.ok ? (
+            <Note host={data.content.host} note={data.content.note} />
+        ) : (
+            <ErrorPage>{data.message}</ErrorPage>
+        )
+    }
+</Layout>

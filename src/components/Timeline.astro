@@ -3,11 +3,12 @@ import type { entities } from 'misskey-js';
 import Note from './Note.astro';
 
 interface Props {
+    host: string;
     notes: entities.Note[];
 }
 
-const { notes } = Astro.props;
+const { host, notes } = Astro.props;
 ---
 
 <h1>タイムライン</h1>
-{notes.map((note) => <Note note={note} />)}
+{notes.map((note) => <Note host={host} note={note} />)}
