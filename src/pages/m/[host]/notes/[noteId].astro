@@ -13,7 +13,7 @@ async function getNote(
     try {
         return Result.ok(await client.request('notes/show', { noteId }));
     } catch (e) {
-        console.log(e);
+        console.error(e);
         return Result.err(500, String(e));
     }
 }
