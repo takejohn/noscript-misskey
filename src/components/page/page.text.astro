@@ -1,0 +1,13 @@
+---
+import type { entities } from 'misskey-js';
+
+interface Props {
+    block: entities.PageBlock;
+}
+
+const { block } = Astro.props;
+---
+
+<div>
+    <span>{block.text}</span>
+</div>

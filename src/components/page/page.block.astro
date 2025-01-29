@@ -1,11 +1,41 @@
 ---
 import type { entities } from 'misskey-js';
+import XText from './page.text.astro';
+import XSection from './page.section.astro';
+import XImage from './page.image.astro';
+import XNote from './page.note.astro';
+import XUnknown from './page.unknown.astro';
 
 interface Props {
     block: entities.PageBlock;
+    h: number;
+    page: entities.Page;
+    host: string;
 }
 
-const { block } = Astro.props;
+function getComponent(type: entities.PageBlock['type']) {
+    switch (type) {
+        case 'text': {
+            return XText;
+        }
+        case 'note': {
+            return XNote;
+        }
+        case 'image': {
+            return XImage;
+        }
+        case 'section': {
+            return XSection;
+        }
+        default: {
+            const _type: never = type;
+            return XUnknown;
+        }
+    }
+}
+
+const { block, h, page, host } = Astro.props;
+const Component = getComponent(block.type);
 ---
 
-{block.text ?? '(テキストなし)'}
+<Component page={page} block={block} h={h} host={host} />

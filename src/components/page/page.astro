@@ -4,11 +4,16 @@ import XBlock from './page.block.astro';
 
 interface Props {
     page: entities.Page;
+    host: string;
 }
 
-const { page } = Astro.props;
+const { page, host } = Astro.props;
 ---
 
 <div>
-    {page.content.map((block) => <XBlock block={block} />)}
+    {
+        page.content.map((block) => (
+            <XBlock page={page} block={block} h={2} host={host} />
+        ))
+    }
 </div>

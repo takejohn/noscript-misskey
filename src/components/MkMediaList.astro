@@ -1,0 +1,11 @@
+---
+import type { entities } from 'misskey-js';
+
+interface Props {
+    mediaList: entities.DriveFile[];
+}
+
+const { mediaList } = Astro.props;
+---
+
+<span>({mediaList.length}件のファイル)</span>

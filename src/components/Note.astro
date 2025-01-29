@@ -15,11 +15,11 @@ const dateCreatedAt = new Date(createdAt);
 ---
 
 <article>
-    <h2>
+    <p>
         <a href={`/m/${host}/@${acct.toString(user)}`}>
             <MkUserName user={user} />
         </a>
-    </h2>
+    </p>
     <a href={`/m/${host}/notes/${note.id}`}>
         <time datetime={dateCreatedAt.toISOString()}>
             {dateCreatedAt.toLocaleString('ja')}

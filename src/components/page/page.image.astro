@@ -1,0 +1,16 @@
+---
+import type { entities } from 'misskey-js';
+import MkMediaList from '../MkMediaList.astro';
+
+interface Props {
+    block: entities.PageBlock;
+    page: entities.Page;
+}
+
+const { block, page } = Astro.props;
+const image = page.attachedFiles.find((x) => x.id == block.fileId);
+---
+
+<div>
+    <MkMediaList mediaList={image ? [image] : []} />
+</div>

@@ -40,7 +40,7 @@ Astro.response.status = data.status;
                     <a href={`/m/${thisHost}/@${acct.toString(page.user)}`}>
                         <MkUserName user={page.user} />
                     </a>
-                    <XPage page={page} />
+                    <XPage page={page} host={thisHost} />
                 </>
             ))
             .unwrapOrElse((error) => <ErrorComponent error={error} />)

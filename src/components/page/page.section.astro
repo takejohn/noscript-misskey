@@ -1,0 +1,27 @@
+---
+import type { entities } from 'misskey-js';
+import XBlock from './page.block.astro';
+
+interface Props {
+    block: entities.PageBlock;
+    h: number;
+    page: entities.Page;
+    host: string;
+}
+
+type HeaderTagName = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+
+const { block, h, page, host } = Astro.props;
+const H = h <= 6 ? (`h${h}` as HeaderTagName) : 'p';
+---
+
+<section>
+    <H>{block.title}</H>
+    <div>
+        {
+            block.children?.map((child) => (
+                <XBlock page={page} block={child} h={h + 1} host={host} />
+            ))
+        }
+    </div>
+</section>

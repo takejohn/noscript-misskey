@@ -1,0 +1,27 @@
+---
+import type { entities } from 'misskey-js';
+import { misskeyApi } from '../../common/api';
+import Note from '../Note.astro';
+import ErrorComponent from '../ErrorComponent.astro';
+
+interface Props {
+    block: entities.PageBlock;
+    page: entities.Page;
+    host: string;
+}
+
+const { block, page, host } = Astro.props;
+
+const data =
+    block.note &&
+    (await misskeyApi(host, 'notes/show', { noteId: block.note }));
+---
+
+<div>
+    {
+        data &&
+            data
+                .map((note) => <Note note={note} host={host} />)
+                .unwrapOrElse((error) => <ErrorComponent error={error} />)
+    }
+</div>
