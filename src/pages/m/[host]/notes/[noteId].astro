@@ -1,6 +1,6 @@
 ---
 import Note from '../../../../components/Note.astro';
-import ErrorPage from '../../../../components/ErrorPage.astro';
+import ErrorComponent from '../../../../components/ErrorComponent.astro';
 import Layout from '../../../../layouts/Layout.astro';
 import { assertNonNull } from '../../../../common/utils';
 import { misskeyApi } from '../../../../common/api';
@@ -14,10 +14,8 @@ Astro.response.status = data.status;
 
 <Layout>
     {
-        data.ok ? (
-            <Note host={host} note={data.content} />
-        ) : (
-            <ErrorPage>{data.message}</ErrorPage>
-        )
+        data
+            .map((note) => <Note host={host} note={note} />)
+            .unwrapOrElse((error) => <ErrorComponent error={error} />)
     }
 </Layout>

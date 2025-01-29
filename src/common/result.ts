@@ -1,16 +1,18 @@
 export type Result<T> = Ok<T> | Err;
 
 export const Result = {
-    ok<T>(content: T): Result<T> {
+    ok<T>(content: T): Ok<T> {
         return new Ok(content);
     },
-    err<T>(status: number, message: string): Result<T> {
+    err(status: number, message: string): Err {
         return new Err(status, message);
     },
 };
 
 export interface ResultBase<T> {
     map<U>(func: (content: T) => U): Result<U>;
+
+    unwrapOrElse(func: (err: Err) => T): T;
 }
 
 export class Ok<T> implements ResultBase<T> {
@@ -23,6 +25,10 @@ export class Ok<T> implements ResultBase<T> {
     public map<U>(func: (content: T) => U): Ok<U> {
         return new Ok(func(this.content));
     }
+
+    public unwrapOrElse(func: (err: Err) => T): T {
+        return this.content;
+    }
 }
 
 export class Err implements ResultBase<never> {
@@ -33,7 +39,11 @@ export class Err implements ResultBase<never> {
         public readonly message: string,
     ) {}
 
-    public map(func: (content: never) => unknown): Err {
-        return new Err(this.status, this.message);
+    public map<U>(func: (content: never) => U): Err {
+        return this;
+    }
+
+    unwrapOrElse<T>(func: (error: Err) => T): T {
+        return func(this);
     }
 }

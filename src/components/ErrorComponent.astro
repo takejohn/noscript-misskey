@@ -1,0 +1,12 @@
+---
+import type { Err } from '../common/result';
+
+interface Props {
+    error: Err;
+}
+
+const { error } = Astro.props;
+---
+
+<h1>エラー</h1>
+<p>{error.message ?? '不明なエラー'}</p>

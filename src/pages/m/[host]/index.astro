@@ -1,7 +1,7 @@
 ---
 import { misskeyApi } from '../../../common/api';
 import { assertNonNull } from '../../../common/utils.js';
-import ErrorPage from '../../../components/ErrorPage.astro';
+import ErrorComponent from '../../../components/ErrorComponent.astro';
 import Timeline from '../../../components/Timeline.astro';
 import Layout from '../../../layouts/Layout.astro';
 
@@ -13,10 +13,8 @@ Astro.response.status = data.status;
 
 <Layout>
     {
-        data.ok ? (
-            <Timeline host={host} notes={data.content} />
-        ) : (
-            <ErrorPage>{data.message}</ErrorPage>
-        )
+        data
+            .map((notes) => <Timeline host={host} notes={notes} />)
+            .unwrapOrElse((error) => <ErrorComponent error={error} />)
     }
 </Layout>

@@ -3,11 +3,14 @@ import { Result } from './result.js';
 
 const ERROR_CODE_STATUS_MAP = new Map([['NO_SUCH_NOTE', 404]]);
 
-export async function misskeyApi<E extends keyof Endpoints>(
+export async function misskeyApi<
+    E extends keyof Endpoints,
+    P extends Endpoints[E]['req'],
+>(
     host: string,
     endpoint: E,
-    params: Endpoints[E]['req'],
-): Promise<Result<Endpoints[E]['res']>> {
+    params: P,
+): Promise<Result<api.SwitchCaseResponseType<E, P>>> {
     try {
         const res = await fetch(`https://${host}/api/${endpoint}`, {
             method: 'POST',
@@ -22,13 +25,14 @@ export async function misskeyApi<E extends keyof Endpoints>(
         if (status == 200) {
             return Result.ok(await res.json());
         } else if (res.status == 204) {
-            return Result.ok(undefined);
+            return Result.ok(undefined as api.SwitchCaseResponseType<E, P>);
         } else {
-            const error: api.APIError = await res.json();
+            const { error }: { error: api.APIError } = await res.json();
             const status = ERROR_CODE_STATUS_MAP.get(error.code) ?? res.status;
             return Result.err(status, error.message);
         }
     } catch (e) {
+        console.error(e);
         return Result.err(500, String(e));
     }
 }
