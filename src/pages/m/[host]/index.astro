@@ -1,53 +1,20 @@
 ---
-import { Result } from '../../../common/result.js';
+import { misskeyApi } from '../../../common/api';
+import { assertNonNull } from '../../../common/utils.js';
 import ErrorPage from '../../../components/ErrorPage.astro';
 import Timeline from '../../../components/Timeline.astro';
 import Layout from '../../../layouts/Layout.astro';
-import { api, type entities } from 'misskey-js';
 
 const { host } = Astro.params;
-
-if (host == null) {
-    return Astro.redirect('/', 307);
-}
-
-async function getNotes(
-    origin: string,
-): Promise<Result<entities.NotesLocalTimelineResponse>> {
-    const client = new api.APIClient({ origin });
-    try {
-        return Result.ok(await client.request('notes/local-timeline', {}));
-    } catch (e) {
-        console.error(e);
-        return Result.err(500, String(e));
-    }
-}
-
-async function getData(): Promise<
-    Result<{
-        host: string;
-        notes: entities.NotesLocalTimelineResponse;
-    }>
-> {
-    const { host } = Astro.params;
-    if (host == null) {
-        return Result.err(400, 'インスタンスが指定されていません');
-    }
-    const notes = await getNotes(`https://${host}`);
-    if (!notes.ok) {
-        return notes;
-    }
-    return Result.ok({ host, notes: notes.content });
-}
-
-const data = await getData();
+assertNonNull(host);
+const data = await misskeyApi(host, 'notes/local-timeline', {});
 Astro.response.status = data.status;
 ---
 
 <Layout>
     {
         data.ok ? (
-            <Timeline host={data.content.host} notes={data.content.notes} />
+            <Timeline host={host} notes={data.content} />
         ) : (
             <ErrorPage>{data.message}</ErrorPage>
         )

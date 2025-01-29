@@ -1,57 +1,21 @@
 ---
-import { api, type entities } from 'misskey-js';
-import { Result } from '../../../../common/result.js';
 import Note from '../../../../components/Note.astro';
 import ErrorPage from '../../../../components/ErrorPage.astro';
 import Layout from '../../../../layouts/Layout.astro';
+import { assertNonNull } from '../../../../common/utils';
+import { misskeyApi } from '../../../../common/api';
 
-async function getNote(
-    origin: string,
-    noteId: string,
-): Promise<Result<entities.Note>> {
-    const client = new api.APIClient({ origin });
-    try {
-        return Result.ok(await client.request('notes/show', { noteId }));
-    } catch (e: any) {
-        console.error(e);
-        if (api.isAPIError(e)) {
-            if (e.code == 'NO_SUCH_NOTE') {
-                return Result.err(404, e.message);
-            }
-            if (e.kind == 'client') {
-                return Result.err(400, e.message);
-            }
-            return Result.err(500, e.message);
-        }
-        return Result.err(500, String(e));
-    }
-}
-
-async function getData(): Promise<
-    Result<{ host: string; note: entities.Note }>
-> {
-    const { host, noteId } = Astro.params;
-    if (host == null) {
-        throw new TypeError('host is undefined');
-    }
-    if (noteId == null) {
-        throw new TypeError('noteId is undefined');
-    }
-    const note = await getNote(`https://${host}`, noteId);
-    if (!note.ok) {
-        return note;
-    }
-    return Result.ok({ host, note: note.content });
-}
-
-const data = await getData();
+const { host, noteId } = Astro.params;
+assertNonNull(host);
+assertNonNull(noteId);
+const data = await misskeyApi(host, 'notes/show', { noteId });
 Astro.response.status = data.status;
 ---
 
 <Layout>
     {
         data.ok ? (
-            <Note host={data.content.host} note={data.content.note} />
+            <Note host={host} note={data.content} />
         ) : (
             <ErrorPage>{data.message}</ErrorPage>
         )
