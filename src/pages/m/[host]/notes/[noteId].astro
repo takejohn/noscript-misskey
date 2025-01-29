@@ -12,8 +12,17 @@ async function getNote(
     const client = new api.APIClient({ origin });
     try {
         return Result.ok(await client.request('notes/show', { noteId }));
-    } catch (e) {
+    } catch (e: any) {
         console.error(e);
+        if (api.isAPIError(e)) {
+            if (e.code == 'NO_SUCH_NOTE') {
+                return Result.err(404, e.message);
+            }
+            if (e.kind == 'client') {
+                return Result.err(400, e.message);
+            }
+            return Result.err(500, e.message);
+        }
         return Result.err(500, String(e));
     }
 }
@@ -40,6 +49,7 @@ async function getData(): Promise<
 }
 
 const data = await getData();
+Astro.response.status = data.status;
 ---
 
 <Layout>
