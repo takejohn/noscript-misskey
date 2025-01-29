@@ -1,0 +1,14 @@
+---
+import type { entities } from 'misskey-js';
+import XBlock from './page.block.astro';
+
+interface Props {
+    page: entities.Page;
+}
+
+const { page } = Astro.props;
+---
+
+<div>
+    {page.content.map((block) => <XBlock block={block} />)}
+</div>

@@ -1,0 +1,48 @@
+---
+import { acct } from 'misskey-js';
+import { misskeyApi } from '../../../../../common/api.js';
+import { assertNonNull } from '../../../../../common/utils.js';
+import { Result } from '../../../../../common/result.js';
+import Layout from '../../../../../layouts/Layout.astro';
+import ErrorComponent from '../../../../../components/ErrorComponent.astro';
+import MkUserName from '../../../../../components/MkUserName.astro';
+import XPage from '../../../../../components/page/page.astro';
+
+const { host: thisHost, acct: acctId, pageName } = Astro.params;
+assertNonNull(thisHost);
+assertNonNull(acctId);
+assertNonNull(pageName);
+
+async function getData(thisHost: string, acctId: string, pageName: string) {
+    const { username, host } = acct.parse(acctId);
+    if (host != null) {
+        return Result.err(
+            400,
+            `ユーザーのインスタンスを指定してページにアクセスすることはできません`,
+        );
+    }
+    return await misskeyApi(thisHost, 'pages/show', {
+        name: pageName,
+        username,
+    });
+}
+
+const data = await getData(thisHost, acctId, pageName);
+Astro.response.status = data.status;
+---
+
+<Layout>
+    {
+        data
+            .map((page) => (
+                <>
+                    <h1>{page.title}</h1>
+                    <a href={`/m/${thisHost}/@${acct.toString(page.user)}`}>
+                        <MkUserName user={page.user} />
+                    </a>
+                    <XPage page={page} />
+                </>
+            ))
+            .unwrapOrElse((error) => <ErrorComponent error={error} />)
+    }
+</Layout>

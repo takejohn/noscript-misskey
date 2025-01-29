@@ -1,5 +1,6 @@
 ---
 import { acct, type entities } from 'misskey-js';
+import MkUserName from './MkUserName.astro';
 
 interface Props {
     host: string;
@@ -15,8 +16,9 @@ const dateCreatedAt = new Date(createdAt);
 
 <article>
     <h2>
-        <a href={`/m/${host}/@${acct.toString(user)}`}
-            >{user.name ?? user.username}</a>
+        <a href={`/m/${host}/@${acct.toString(user)}`}>
+            <MkUserName user={user} />
+        </a>
     </h2>
     <a href={`/m/${host}/notes/${note.id}`}>
         <time datetime={dateCreatedAt.toISOString()}>
