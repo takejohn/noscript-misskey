@@ -1,0 +1,41 @@
+---
+import { acct, entities } from 'misskey-js';
+import { misskeyApi } from '../../../../common/api.js';
+import { assertNonNull } from '../../../../common/utils.js';
+import ErrorComponent from '../../../../components/ErrorComponent.astro';
+import Layout from '../../../../layouts/Layout.astro';
+import { Err } from '../../../../common/result.js';
+import MkUserName from '../../../../components/MkUserName.astro';
+import MkAcct from '../../../../components/MkAcct.astro';
+
+const { host, acct: id } = Astro.params;
+assertNonNull(host);
+assertNonNull(id);
+
+async function getData(id: string, defaultHost: string) {
+    const data = await misskeyApi(defaultHost, 'users/show', acct.parse(id));
+    return data;
+}
+
+const data = await getData(id, host);
+Astro.response.status = data.status;
+---
+
+<Layout>
+    {
+        data
+            .map((user: entities.User) => {
+                return (
+                    <>
+                        <h1>
+                            <MkUserName user={user} />
+                        </h1>
+                        <p>
+                            <MkAcct user={user} defaultHost={host} />
+                        </p>
+                    </>
+                );
+            })
+            .unwrapOrElse((error: Err) => <ErrorComponent error={error} />)
+    }
+</Layout>

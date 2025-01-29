@@ -1,0 +1,11 @@
+---
+import type { entities } from 'misskey-js';
+
+interface Props {
+    user: entities.User;
+}
+
+const { user } = Astro.props;
+---
+
+<span>{user.name ?? user.username}</span>

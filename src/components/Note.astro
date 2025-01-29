@@ -1,5 +1,5 @@
 ---
-import type { entities } from 'misskey-js';
+import { acct, type entities } from 'misskey-js';
 
 interface Props {
     host: string;
@@ -14,7 +14,10 @@ const dateCreatedAt = new Date(createdAt);
 ---
 
 <article>
-    <h2>{user.name ?? user.username}</h2>
+    <h2>
+        <a href={`/m/${host}/@${acct.toString(user)}`}
+            >{user.name ?? user.username}</a>
+    </h2>
     <a href={`/m/${host}/notes/${note.id}`}>
         <time datetime={dateCreatedAt.toISOString()}>
             {dateCreatedAt.toLocaleString('ja')}

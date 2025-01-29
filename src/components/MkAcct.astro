@@ -1,0 +1,12 @@
+---
+import type { entities } from 'misskey-js';
+
+interface Props {
+    user: entities.UserLite;
+    defaultHost: string;
+}
+
+const { user, defaultHost } = Astro.props;
+---
+
+<span>@{user.username}@{user.host ?? defaultHost}</span>
