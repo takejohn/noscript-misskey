@@ -13,10 +13,7 @@ if (misskeyUrl != null) {
         if (parsedUrl.protocol == 'https:') {
             return Astro.redirect(path, 307);
         } else {
-            return Astro.redirect(
-                `${path}?protocol=${encodeURIComponent(parsedUrl.protocol)}`,
-                307,
-            );
+            error = `不正なプロトコル: ${parsedUrl.protocol}`;
         }
     }
 }

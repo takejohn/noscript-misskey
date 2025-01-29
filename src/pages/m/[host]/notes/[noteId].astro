@@ -37,11 +37,7 @@ async function getData(): Promise<
     if (noteId == null) {
         throw new TypeError('noteId is undefined');
     }
-    const protocol = Astro.url.searchParams.get('protocol') ?? 'https:';
-    if (protocol != 'https:' && protocol != 'http:') {
-        return Result.err(400, `不正なプロトコル: ${protocol}`);
-    }
-    const note = await getNote(`${protocol}//${host}`, noteId);
+    const note = await getNote(`https://${host}`, noteId);
     if (!note.ok) {
         return note;
     }

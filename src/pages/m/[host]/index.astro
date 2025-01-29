@@ -33,11 +33,7 @@ async function getData(): Promise<
     if (host == null) {
         return Result.err(400, 'インスタンスが指定されていません');
     }
-    const protocol = Astro.url.searchParams.get('protocol') ?? 'https:';
-    if (protocol != 'https:' && protocol != 'http:') {
-        return Result.err(400, `不正なプロトコル: ${protocol}`);
-    }
-    const notes = await getNotes(`${protocol}//${host}`);
+    const notes = await getNotes(`https://${host}`);
     if (!notes.ok) {
         return notes;
     }
