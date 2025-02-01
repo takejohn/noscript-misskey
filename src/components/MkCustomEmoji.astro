@@ -1,0 +1,37 @@
+---
+import { misskeyApi } from '../common/api';
+import { Result } from '../common/result';
+
+interface Props {
+    name: string;
+    url?: string;
+    host: string;
+}
+
+const { name, url: propUrl, host } = Astro.props;
+
+async function getUrl(): Promise<Result<string>> {
+    if (propUrl != null) {
+        return Result.ok(propUrl);
+    }
+    const res = await misskeyApi(host, 'emoji', { name });
+    return res.map((emoji) => emoji.url);
+}
+
+let alt = `:${name}@${host}:`;
+let url = await getUrl();
+---
+
+{
+    url
+        .map((url) => <img src={url} alt={alt} title={alt} />)
+        .unwrapOrElse((error) => <span>{alt}</span>)
+}
+
+<style>
+    img {
+        height: 2em;
+        width: auto;
+        vertical-align: middle;
+    }
+</style>

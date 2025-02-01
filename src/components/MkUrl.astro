@@ -1,0 +1,16 @@
+---
+interface Props {
+    url: string;
+}
+
+const { url } = Astro.props;
+const { protocol, hostname, port, pathname, search, hash } = new URL(url);
+---
+
+<a href={url}>
+    <span>{protocol}//</span><span>{hostname}</span>{
+        port && <span>{port}</span>
+    }{pathname && <span>{pathname}</span>}<span>{search}</span><span
+        >{hash}</span
+    >
+</a>

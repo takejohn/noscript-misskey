@@ -1,0 +1,14 @@
+---
+interface Props {
+    q: string;
+}
+
+const { q } = Astro.props;
+---
+
+<div>
+    <form action="https://www.google.com/search">
+        <input type="search" name="q" placeholder={q} value={q} />
+        <button type="submit">検索</button>
+    </form>
+</div>

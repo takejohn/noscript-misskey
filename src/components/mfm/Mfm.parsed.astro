@@ -1,0 +1,174 @@
+---
+import type { MfmNode } from 'mfm-js';
+import type { MfmContext } from '../../common/mfmContext.js';
+import XText from './Mfm.text.astro';
+import XItalic from './Mfm.italic.astro';
+import XFn from './fn/Mfm.fn.astro';
+import XEmojiCode from './Mfm.emojiCode.astro';
+import MkUrl from '../MkUrl.astro';
+import MkLink from '../MkLink.astro';
+import MkMention from '../MkMention.astro';
+import MkCode from '../MkCode.astro';
+import MkCodeInline from '../MkCodeInline.astro';
+import MkGoogle from '../MkGoogle.astro';
+
+interface Props {
+    ast: MfmNode[];
+    context: MfmContext;
+}
+
+const { ast, context } = Astro.props;
+---
+
+{
+    ast.map((token) => {
+        switch (token.type) {
+            case 'text': {
+                return (
+                    <XText
+                        token={token}
+                        nyaize={context.nyaize}
+                        isPlain={context.plain}
+                    />
+                );
+            }
+
+            case 'bold': {
+                return (
+                    <b>
+                        <Astro.self ast={token.children} context={context} />
+                    </b>
+                );
+            }
+
+            case 'strike': {
+                return (
+                    <del>
+                        <Astro.self ast={token.children} context={context} />
+                    </del>
+                );
+            }
+
+            case 'italic': {
+                return <XItalic token={token} context={context} />;
+            }
+
+            case 'fn': {
+                return <XFn token={token} context={context} />;
+            }
+
+            case 'small': {
+                return (
+                    <small>
+                        <Astro.self ast={token.children} context={context} />
+                    </small>
+                );
+            }
+
+            case 'center': {
+                return (
+                    <div>
+                        <Astro.self ast={token.children} context={context} />
+                    </div>
+                );
+            }
+
+            case 'url': {
+                return <MkUrl url={token.props.url} />;
+            }
+
+            case 'link': {
+                return (
+                    <MkLink url={token.props.url}>
+                        <Astro.self ast={token.children} context={context} />
+                    </MkLink>
+                );
+            }
+
+            case 'mention': {
+                return (
+                    <MkMention
+                        username={token.props.username}
+                        host={
+                            token.props.host ??
+                            context.authorHost ??
+                            context.localHost
+                        }
+                        localHost={context.localHost}
+                    />
+                );
+            }
+
+            case 'hashtag': {
+                return <a>#{token.props.hashtag}</a>;
+            }
+
+            case 'blockCode': {
+                return (
+                    <MkCode
+                        code={token.props.code}
+                        lang={token.props.lang ?? undefined}
+                    />
+                );
+            }
+
+            case 'inlineCode': {
+                return <MkCodeInline code={token.props.code} />;
+            }
+
+            case 'quote': {
+                if (!context.nowrap) {
+                    return (
+                        <blockquote>
+                            <Astro.self
+                                ast={token.children}
+                                context={context}
+                            />
+                        </blockquote>
+                    );
+                } else {
+                    return (
+                        <q>
+                            <Astro.self
+                                ast={token.children}
+                                context={context}
+                            />
+                        </q>
+                    );
+                }
+            }
+
+            case 'emojiCode': {
+                return <XEmojiCode token={token} context={context} />;
+            }
+
+            case 'unicodeEmoji': {
+                return <span>{token.props.emoji}</span>;
+            }
+
+            case 'mathInline': {
+                return <code>{token.props.formula}</code>;
+            }
+
+            case 'mathBlock': {
+                return <code>{token.props.formula}</code>;
+            }
+
+            case 'search': {
+                return <MkGoogle q={token.props.query} />;
+            }
+
+            case 'plain': {
+                return (
+                    <span>
+                        <Astro.self ast={token.children} context={context} />
+                    </span>
+                );
+            }
+
+            default: {
+                token satisfies never;
+            }
+        }
+    })
+}

@@ -1,0 +1,31 @@
+---
+import { Code } from 'astro:components';
+import { isSpecialLang, type SpecialLanguage } from 'shiki';
+import { bundledLanguages, type BundledLanguage } from 'shiki/langs';
+
+interface Props {
+    code: string;
+    lang?: string;
+}
+
+const { code } = Astro.props;
+
+function getLang(
+    lang: string | undefined,
+): BundledLanguage | SpecialLanguage | undefined {
+    if (typeof lang == 'string') {
+        if (lang in bundledLanguages) {
+            return lang as keyof typeof bundledLanguages;
+        }
+        if (isSpecialLang(lang)) {
+            return lang;
+        }
+    }
+}
+
+const lang = getLang(Astro.props.lang);
+---
+
+<div>
+    <Code code={code} lang={lang} />
+</div>

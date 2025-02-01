@@ -1,0 +1,58 @@
+---
+import { parse, parseSimple, type MfmNode } from 'mfm-js';
+import { type entities } from 'misskey-js';
+import XParsed from './Mfm.parsed.astro';
+import type { MfmContext } from '../../common/mfmContext';
+
+interface Props {
+    text: string;
+    plain?: boolean;
+    author?: entities.UserLite;
+    emojiUrls?: Record<string, string>;
+    nyaize?: boolean | 'respect';
+    host: string;
+}
+
+const {
+    text,
+    plain = false,
+    author,
+    emojiUrls,
+    nyaize = false,
+    host,
+} = Astro.props;
+
+function getParser(): (input: string) => MfmNode[] {
+    if (plain) {
+        return parseSimple;
+    } else {
+        return parse;
+    }
+}
+
+function getShouldNyaize(): boolean {
+    if (!nyaize) {
+        return false;
+    }
+    if (nyaize == 'respect') {
+        if (author?.isCat) {
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
+const parser = getParser();
+const rootAst: MfmNode[] = parser(text);
+
+const context: MfmContext = {
+    plain,
+    emojiUrls,
+    nyaize: getShouldNyaize(),
+    localHost: host,
+    authorHost: author?.host ?? undefined,
+};
+---
+
+<XParsed ast={rootAst} context={context} />

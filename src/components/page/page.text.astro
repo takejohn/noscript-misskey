@@ -1,13 +1,15 @@
 ---
 import type { entities } from 'misskey-js';
+import Mfm from '../mfm/Mfm.astro';
 
 interface Props {
     block: entities.PageBlock;
+    host: string;
 }
 
-const { block } = Astro.props;
+const { block, host } = Astro.props;
 ---
 
 <div>
-    <span>{block.text}</span>
+    {block.text && <Mfm text={block.text} host={host} />}
 </div>

@@ -1,0 +1,29 @@
+---
+import type { MfmText } from 'mfm-js';
+import { nyaize } from 'misskey-js';
+
+interface Props {
+    token: MfmText;
+    nyaize: boolean;
+    isPlain: boolean;
+}
+
+const { token, nyaize: doNyaize, isPlain } = Astro.props;
+
+let newlineNormalizedText = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
+const text = doNyaize ? nyaize(newlineNormalizedText) : newlineNormalizedText;
+---
+
+{() => {
+    if (!isPlain) {
+        return text.split('\n').map((line, index) => {
+            if (index == 0) {
+                return <>{line}</>;
+            } else {
+                return <><br/>{line}</>;
+            }
+        })
+    } else {
+        return <>{text.replace(/\n/g, ' ')}</>;
+    }
+}}

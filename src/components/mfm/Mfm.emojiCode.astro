@@ -1,0 +1,38 @@
+---
+import type { MfmEmojiCode } from 'mfm-js';
+import type { MfmContext } from '../../common/mfmContext.js';
+import MkCustomEmoji from '../MkCustomEmoji.astro';
+
+interface Props {
+    token: MfmEmojiCode;
+    context: MfmContext;
+}
+
+const { token, context } = Astro.props;
+---
+
+{
+    () => {
+        if (context.authorHost == null) {
+            return (
+                <MkCustomEmoji
+                    name={token.props.name}
+                    host={context.localHost}
+                />
+            );
+        } else if (
+            context.emojiUrls &&
+            context.emojiUrls[token.props.name] == null
+        ) {
+            return <span>:{token.props.name}:</span>;
+        } else {
+            return (
+                <MkCustomEmoji
+                    name={token.props.name}
+                    url={context.emojiUrls?.[token.props.name]}
+                    host={context.authorHost}
+                />
+            );
+        }
+    }
+}

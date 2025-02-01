@@ -1,6 +1,7 @@
 ---
 import { acct, type entities } from 'misskey-js';
 import MkUserName from './MkUserName.astro';
+import Mfm from './mfm/Mfm.astro';
 
 interface Props {
     host: string;
@@ -9,7 +10,7 @@ interface Props {
 
 const { host, note } = Astro.props;
 
-const { user, createdAt, text } = note;
+const { user, createdAt, text, emojis } = note;
 
 const dateCreatedAt = new Date(createdAt);
 ---
@@ -25,5 +26,16 @@ const dateCreatedAt = new Date(createdAt);
             {dateCreatedAt.toLocaleString('ja')}
         </time>
     </a>
-    <p>{text ?? '(本文なし)'}</p>
+    <p>
+        {
+            text && (
+                <Mfm
+                    text={text}
+                    author={note.user}
+                    host={host}
+                    emojiUrls={emojis}
+                />
+            )
+        }
+    </p>
 </article>

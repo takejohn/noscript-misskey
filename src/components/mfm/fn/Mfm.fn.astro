@@ -1,0 +1,21 @@
+---
+import type { MfmFn } from 'mfm-js';
+import type { MfmContext } from '../../../common/mfmContext.js';
+import XParsed from '../Mfm.parsed.astro';
+
+interface Props {
+    token: MfmFn;
+    context: MfmContext;
+}
+
+function validTime(t: string | boolean | null | undefined): string | null {
+    if (t != null && typeof t != 'boolean' && t.match(/^\-?[0-9.]+s$/)) {
+        return t;
+    }
+    return null;
+}
+
+const { token, context } = Astro.props;
+---
+
+<XParsed ast={token.children} context={context} />

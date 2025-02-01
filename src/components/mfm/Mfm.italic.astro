@@ -1,0 +1,22 @@
+---
+import type { MfmItalic } from 'mfm-js';
+import XParsed from './Mfm.parsed.astro';
+import type { MfmContext } from '../../common/mfmContext.js';
+
+interface Props {
+    token: MfmItalic;
+    context: MfmContext;
+}
+
+const { token, context } = Astro.props;
+---
+
+<i class="mfm-italic">
+    <XParsed ast={token.children} context={context} />
+</i>
+
+<style>
+    .mfm-italic {
+        font-style: oblique;
+    }
+</style>

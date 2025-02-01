@@ -1,0 +1,17 @@
+---
+import { toUnicode } from 'punycode';
+interface Props {
+    username: string;
+    host: string;
+    localHost: string;
+}
+
+const { username, host, localHost } = Astro.props;
+const canonical =
+    host == localHost ? `@${username}` : `@${username}@${toUnicode(host)}`;
+const url = `/m/${host}/${canonical}`;
+---
+
+<a href={url}>
+    <span>@{username}</span>{host != localHost && <span>@{host}</span>}
+</a>
